@@ -15,27 +15,27 @@ int main(int argc, char* argv[])
 	{
 		isHuman = true;
 	}
-	if (isHuman)
+	while ((x != 0 || y != 0))
 	{
-		while ((x != 0 || y != 0))
+		cout << "Введите координаты х и у: " << endl;
+		cin >> x;
+		cin >> y;
+		if (x == 0 && y == 0)
 		{
-			cout << "Введите координаты х и у: " << endl;
-			cin >> x;
-			cin >> y;
-			if (x == 0 && y == 0)
+			break;
+		}
+		if ((x <= 3 && x >= 0) & (y <= 4 && y >= 0))
+		{
+			double func = 0;
+			func = -4.0 / 3 * x + 4;
+			if (y <= func && y >= 0)
 			{
-				return 0;
-			}
-			if ((x <= 3 && x >= 0) & (y <= 4 && y >= 0))
-			{
-				double func = 0;
-				func = -4.0 / 3 * x + 4;
-				if (y <= func && y >= 0)
+				cout << "YES" << endl;
+				if (isHuman)
 				{
-					cout << "YES" << endl;
-					std::string ans;
-					std::cout << "Вы хотите продолжить?\n";
-					std::cin >> ans;
+					string ans;
+					cout << "Вы хотите продолжить?\n";
+					cin >> ans;
 					if (ans == ("YES"))
 					{
 						continue;
@@ -45,14 +45,21 @@ int main(int argc, char* argv[])
 						break;
 					}
 				}
-
+				else
+				{
+					continue;
+				}
 			}
-			else
+
+		}
+		else
+		{
+			cout << "NO" << endl;
+			if (isHuman) 
 			{
-				cout << "NO" << endl;
-				std::string ans2;
-				std::cout << "Упс, кажется эта точка не попала в треугольник. Вы хотите продолжить?\n";
-				std::cin >> ans2;
+				string ans2;
+				cout << "Упс, кажется эта точка не попала в треугольник. Вы хотите продолжить?\n";
+				cin >> ans2;
 				if (ans2 == ("YES"))
 				{
 					continue;
@@ -62,30 +69,9 @@ int main(int argc, char* argv[])
 					break;
 				}
 			}
-		}
-	}
-	else
-	{
-		while ((x != 0 || y != 0))
-		{
-			cin >> x;
-			cin >> y;
-			if (x <= 3 && x >= 0)
-			{
-				double func = 0;
-				func = -4.0 / 3 * x + 4;
-				if (y <= func && y >= 0)
-				{
-					cout << "YES" << endl;
-				}
-				else
-				{
-					cout << "NO" << endl;
-				}
-			}
 			else
 			{
-				cout << "NO" << endl;
+				break;
 			}
 		}
 	}
