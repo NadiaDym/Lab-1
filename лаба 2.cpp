@@ -49,8 +49,6 @@ int main(int argc, char* argv[])
 		{
 			if (isPrime(num_to_enter))
 				cout << num_to_enter << endl;
-			else
-				continue;
 		}
 		if (counter == 0)
 		{
