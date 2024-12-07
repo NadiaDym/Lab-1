@@ -2,21 +2,8 @@
 #include <clocale>
 using namespace std;
 
-int amount, counter, num_to_enter, max_value, min_value, div_num_five, power_two, top, check_num, first, second, third, difference;
+int amount, counter, num_to_enter, amount_of_delit, max_value, min_value, div_num_five, power_two, top, check_num, first, second, third, difference;
 float sum_num, middle_value;
-
-bool isPrime(int n)
-{
-	if (n > 1)
-	{
-		for (int i = 2; i < n; i += 1)
-			if (n % i == 0) // проверка на четность числа, если условие выполняется, то число четное, а значит составное
-				return false;
-		return true; // если число прошло проверку цикла фор (у него нет делителей в диапазоне от 2 до самого числа не включительно), то оно простое
-	}
-	else // число не простое (1) или не натуральное (0 и отрицательные)
-		return false;
-}
 
 int main(int argc, char* argv[])
 {
@@ -38,17 +25,32 @@ int main(int argc, char* argv[])
 			cout << counter + 1 << " число:" << endl;
 		}
 		cin >> num_to_enter;
-		if (isHuman)
+		amount_of_delit = 0;
+		if (num_to_enter % 2 != 0)
 		{
-			if (isPrime(num_to_enter))
+			int core = sqrt(num_to_enter);
+			for (int delit = 3; delit <= core; delit += 2)
+			{
+				if (num_to_enter % delit == 0)
+				{
+					amount_of_delit++;
+					break;
+				}
+			}
+		}
+		else
+			amount_of_delit++;
+		if (amount_of_delit == 0 and num_to_enter != 1 or num_to_enter == 2)
+		{
+			if (isHuman)
 				cout << num_to_enter << " - простое число" << endl;
 			else
-				cout << num_to_enter << " - не простое число" << endl;
+				cout << num_to_enter << endl;
 		}
 		else
 		{
-			if (isPrime(num_to_enter))
-				cout << num_to_enter << endl;
+			if (isHuman)
+				cout << num_to_enter << " - не простое число" << endl;
 		}
 		if (counter == 0)
 		{
