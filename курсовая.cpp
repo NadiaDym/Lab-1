@@ -64,40 +64,64 @@ void editMtx(int** matrixA, int** matrixB, int size) {
 	{
 		cout << "Введите изменения в матрице A - номер строки, столбца и новое значение (через пробел):\n";
 		cin >> row >> col >> value;
-		if (row > 0 && row <= size && col > 0 && col <= size) { 
-			matrixA[row-1][col-1] = value;
+		if (row > 0 && row <= size && col > 0 && col <= size) {
+			matrixA[row - 1][col - 1] = value;
+		}
+		else {
+			cout << "Некорректные индексы!" << endl;
 		}
 	}
 	else if (numMtx == 2)
 	{
 		cout << "Введите изменения в матрице B - номер строки, столбца и новое значение (через пробел):\n";
 		cin >> row >> col >> value;
-		if (row > 0 && row <= size && col > 0 && col <= size) { 
-			matrixB[row-1][col-1] = value;
+		if (row > 0 && row <= size && col > 0 && col <= size) {
+			matrixB[row - 1][col - 1] = value;
+		}
+		else {
+			cout << "Некорректные индексы!" << endl;
 		}
 	}
 	else {
-		cout << "Некорректные индексы!" << endl;
+		cout << "Некорректный номер!" << endl;
 	}
+}
+
+// Функция, которая проверяет, равны ли два столбца матрицы
+bool columnsEqual(int** A, int** B, int size, int colA, int colB) {
+	for (int i = 0; i < size; ++i) {
+		if (A[i][colA] != B[i][colB]) {
+			return false;
+		}
+	}
+	return true;
 }
 
 // Функция для подсчета столбцов матрицы А, которые встречаются более одного раза в матрице B
 int countRepeatCol(int** A, int** B, int size) {
 	int count = 0;
 
-	for (int j = 0; j < size; ++j) {
-		int rpt = 0;
-		for (int i = 0; i < size; ++i) {
-			if (A[i][j] == B[i][j]) {
-				rpt++;
+	// Проверяем каждый столбец матрицы A
+	for (int colA = 0; colA < size; colA++) {
+		int occurrences = 0; // Счетчик для текущего столбца из A
+
+		// Проверяем каждый столбец матрицы B
+		for (int colB = 0; colB < size; colB++) {
+			// Проверяем, равны ли столбцы A и B
+			if (columnsEqual(A, B, size, colA, colB)) {
+				occurrences++;
 			}
 		}
-		if (rpt > 1) {
+
+		// Проверяем, встречается ли столбец из A более одного раза в B
+		if (occurrences > 1) {
 			count++;
 		}
 	}
+
 	return count;
 }
+
 
 
 int main() {
@@ -170,7 +194,7 @@ int main() {
 			cout << "7. Вызов меню\n";
 			cout << "0. Выход из программы\n";
 		}
-			break;
+		break;
 		case 0:
 			cout << "Вы завершили работу программы!\n";
 			break;
