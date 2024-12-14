@@ -142,9 +142,11 @@ int main() {
 	// Динамическое выделение памяти для матриц
 	int** A = new int*[size];
 	int** B = new int*[size];
+	int** C = new int*[size];
 	for (int i = 0; i < size; i++) {
 		A[i] = new int[size];
 		B[i] = new int[size];
+		C[i] = new int[size];
 	}
 
 	int choice;
@@ -208,9 +210,11 @@ int main() {
 	for (int i = 0; i < size; i++) {
 		delete[] A[i];
 		delete[] B[i];
+		delete[] C[i];
 	}
 	delete[] A;
 	delete[] B;
+	delete[] C;
 
 	return 0;
 }
