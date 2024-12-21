@@ -4,10 +4,8 @@
 #include <windows.h>
 #include <sstream>
 
-
 using namespace std;
 
-const int MAX_STUDENTS = 100;
 const int MAX_NAME_LENGTH = 100;
 const int GRADES_COUNT = 5;
 
@@ -23,16 +21,8 @@ struct STUDENT {
 	}
 };
 
-// Функция для подсчета среднего бала
-double calculate_average(const STUDENT &student) {
-	double sum = 0;
-	for (int i = 0; i < GRADES_COUNT; i++) {
-		sum += student.grades[i];
-	}
-	return sum / GRADES_COUNT;
-}
 
-// Устойчивый алгоритм сортировки по номеру группы
+// Устойчивый алгоритм сортировки по номеру группы по возрастанию
 void stable_sort_by_group(STUDENT students[], int N) {
 	for (int i = 0; i < N - 1; ++i) {
 		for (int j = 0; j < N - 1 - i; ++j) {
@@ -44,8 +34,6 @@ void stable_sort_by_group(STUDENT students[], int N) {
 		}
 	}
 }
-
-
 // Функция для вывода информации о студентах
 void print_students(const STUDENT students[], int N) {
 	for (int i = 0; i < N; i++) {
@@ -59,6 +47,7 @@ void print_students(const STUDENT students[], int N) {
 		cout << endl;
 	}
 }
+// Сортировка по среднему значению (по убыванию)
 void stableSortByAverageGrade(STUDENT* students, int n) {
 	for (int i = 1; i < n; ++i) {
 		STUDENT key = students[i];
@@ -70,6 +59,7 @@ void stableSortByAverageGrade(STUDENT* students, int n) {
 		students[j + 1] = key;
 	}
 }
+// Печать средних значений (по убыванию)
 void printHighAverageStudents(const STUDENT* students, int n) {
 	for (int i = 0; i < n; ++i) {
 		float avg = students[i].averageGrade();
@@ -77,6 +67,7 @@ void printHighAverageStudents(const STUDENT* students, int n) {
 	}
 }
 
+// Функция для фильтрации студентов со средним баллом выше 4.0
 int filterHighAverageStudents(const STUDENT* students, int n, STUDENT* filteredStudents) {
 	int M = 0;
 	for (int i = 0; i < n; ++i) {
@@ -84,7 +75,7 @@ int filterHighAverageStudents(const STUDENT* students, int n, STUDENT* filteredS
 			filteredStudents[M++] = students[i];
 		}
 	}
-		return M;
+	return M;
 }
 
 // Функция для группировки и агрегации данных по номеру группы
@@ -102,6 +93,7 @@ string center(const string& str, int width) {
 	return string(pad_left, ' ') + str + string(pad_right, ' ');
 }
 
+// Функция для оформления таблицы
 void head(const GroupStats group_stats[], int unique_groups) {
 	cout << "Группировка по номерам групп:\n";
 	cout << "|" << setw(15) << center("Номер группы", 30) << "|"
@@ -116,20 +108,37 @@ void head(const GroupStats group_stats[], int unique_groups) {
 	}
 }
 
+// Функция для поиска группы
+int findGroupIndex(GroupStats group_stats[], int unique_groups, int group_number) {
+	for (int j = 0; j < unique_groups; j++) {
+		if (group_stats[j].group_number == group_number) {
+			return j; // Возвращаем индекс группы
+		}
+	}
+	return -1; // Если группа не найдена
+}
+
+// Функция для сортировки групп по количеству двоечников
+void sortGroupStats(GroupStats group_stats[], int unique_groups) {
+	for (int i = 0; i < unique_groups - 1; ++i) {
+		for (int j = 0; j < unique_groups - 1 - i; ++j) {
+			if (group_stats[j].bad_student_count < group_stats[j + 1].bad_student_count ||
+				(group_stats[j].bad_student_count == group_stats[j + 1].bad_student_count &&
+					group_stats[j].group_number > group_stats[j + 1].group_number)) {
+				swap(group_stats[j], group_stats[j + 1]);
+			}
+		}
+	}
+}
+
+// Функция для высчета уникальных групп и кол-ва двоечников
 void group_students(const STUDENT students[], int N, bool isHuman) {
-	GroupStats group_stats[MAX_STUDENTS];
+	GroupStats* group_stats = new GroupStats[N];
 	int unique_groups = 0;
 
 	// Сбор данных по группам
 	for (int i = 0; i < N; i++) {
-		int group_index = -1;
-
-		for (int j = 0; j < unique_groups; j++) {
-			if (group_stats[j].group_number == students[i].group_number) {
-				group_index = j;
-				break;
-			}
-		}
+		int group_index = findGroupIndex(group_stats, unique_groups, students[i].group_number);
 
 		if (group_index == -1) {
 			group_stats[unique_groups++] = { students[i].group_number, 1, 0 };
@@ -148,26 +157,21 @@ void group_students(const STUDENT students[], int N, bool isHuman) {
 		}
 	}
 
-	// Алгоритм сортировки по количеству двоечников (по убыванию)
-	for (int i = 0; i < unique_groups - 1; ++i) {
-		for (int j = 0; j < unique_groups - 1 - i; ++j) {
-			if (group_stats[j].bad_student_count < group_stats[j + 1].bad_student_count ||
-				(group_stats[j].bad_student_count == group_stats[j + 1].bad_student_count &&
-					group_stats[j].group_number > group_stats[j + 1].group_number)) {
-				swap(group_stats[j], group_stats[j + 1]);
-			}
-		}
-	}
+	// Сортируем группы
+	sortGroupStats(group_stats, unique_groups);
 
-	for (int i = 0; i < unique_groups; i++) 
+	// Выводим результаты
+	if (isHuman)
 	{
-		if (isHuman)
-		{
-			head(group_stats, unique_groups);
-		}
-		else
+		head(group_stats, unique_groups);
+	}
+	else
+	{
+		for (int i = 0; i < unique_groups; i++)
 			cout << group_stats[i].group_number << " - " << group_stats[i].student_count << " - " << group_stats[i].bad_student_count << endl;
 	}
+
+	delete[] group_stats; // Освобождаем память
 }
 
 int main(int argc, char* argv[]) {
@@ -178,7 +182,6 @@ int main(int argc, char* argv[]) {
 		isHuman = true;
 	}
 	setlocale(LC_ALL, "RU");
-	STUDENT students[MAX_STUDENTS];
 	int N;
 
 	// Ввод количества студентов
@@ -186,6 +189,8 @@ int main(int argc, char* argv[]) {
 		cout << "Введите количество студентов: ";
 	cin >> N;
 	cin.ignore(); // Игнорируем оставшийся символ новой строки
+
+	STUDENT* students = new STUDENT[N]; //
 
 	// Ввод информации о студентах
 	for (int i = 0; i < N; i++) {
@@ -210,7 +215,7 @@ int main(int argc, char* argv[]) {
 	print_students(students, N);
 
 	// 3. Фильтрация по среднему балу
-	STUDENT* filteredStudents = new STUDENT[N];
+	STUDENT* filteredStudents = new STUDENT[N]; // Массив для отфильтрованных студентов
 	int M = filterHighAverageStudents(students, N, filteredStudents);
 
 	stableSortByAverageGrade(filteredStudents, M);
@@ -227,7 +232,8 @@ int main(int argc, char* argv[]) {
 	// 4. Группировка по номерам групп и агрегация
 	group_students(students, N, isHuman);
 
-	SetConsoleCP(866);
-
+	// 5. Освобождение памяти
+	delete[] students; // Освобождение памяти для массива студентов
+	delete[] filteredStudents;
 	return 0;
 }
